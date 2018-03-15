@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FlyCam : MonoBehaviour {
 
@@ -9,12 +7,14 @@ public class FlyCam : MonoBehaviour {
     void Update() {
 
         Vector3 position = GetBaseInput();
-        position = position * moveSpeed * Time.deltaTime;
+        position *= (moveSpeed * Time.deltaTime);
         transform.Translate(position);
     }
 
-    private Vector3 GetBaseInput() { //returns the basic values, if it's 0 than it's not active.
+    //returns the basic values, if it's 0 than it's not active.
+    private Vector3 GetBaseInput() { 
         Vector3 p_Velocity = Vector3.zero;
+
         if (Input.GetKey(KeyCode.W)) {
             p_Velocity += new Vector3(0, 0, 1);
         }

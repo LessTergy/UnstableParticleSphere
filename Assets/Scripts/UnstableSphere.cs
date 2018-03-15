@@ -1,21 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class EQCircle : MonoBehaviour {
+[RequireComponent(typeof(ParticleSystem))]
+public class UnstableSphere : MonoBehaviour {
 
-    public int maxParticles = 100;
+    [Header("Particle Preferences")]
+    public int particleCount = 1000;
     public float particleSize = 0.1f;
 
-    public float circleRadius = 1f;
-    public float gravitationRadius = 0.01f;
 
-    public float gravityPointMass = 1f;
+    [Space(10)]
+    [Header("Sphere Preferences")]
+    public float sphereRadius = 5f;
+
+    [Space(10)]
+    [Header("Physics Preferences")]
     public float particleMass = 0.01f;
 
     [Range(1f, 85f)]
-    public float angle = 1f;
-    public Vector3 acceleration = Vector3.one;
+    public float deltaGravityAngleForChange = 20f;
+    public Vector3 accelerateDirection = new Vector3(0f, 10f, 0f);
 
     [Range(1f, 200f)]
     public float forceRatio = 1f;
@@ -31,8 +34,8 @@ public class EQCircle : MonoBehaviour {
     private new ParticleSystem particleSystem;
     private ParticleSystem.Particle[] particles;
     private ParticleData[] dataList;
+    
 
-	// Use this for initialization
 	void Start () {
         particleSystem = GetComponent<ParticleSystem>();
         InitParticles();
@@ -51,18 +54,17 @@ public class EQCircle : MonoBehaviour {
     }
 
     private void InitParticles() {
-        particles = new ParticleSystem.Particle[maxParticles];
-        dataList = new ParticleData[maxParticles];
+        particles = new ParticleSystem.Particle[particleCount];
+        dataList = new ParticleData[particleCount];
 
-        for (int i = 0; i < maxParticles; i++) {
+        for (int i = 0; i < particleCount; i++) {
             //Get
             ParticleSystem.Particle particle = particles[i];
             ParticleData data = dataList[i];
 
             //Change
             Vector3 randomPoint = Random.insideUnitSphere;
-            Vector3 startPosition = randomPoint * circleRadius + transform.position;
-            data.gravitationPoint = randomPoint * gravitationRadius + transform.position;
+            Vector3 startPosition = randomPoint * sphereRadius + transform.position;
             particle.position = startPosition;
             data.startPosition = startPosition;
 
@@ -75,35 +77,36 @@ public class EQCircle : MonoBehaviour {
         }
     }
 	
-	// Update is called once per frame
 	void Update () {
+        //Resimulate
         if (Input.GetKeyDown(KeyCode.Space)) {
             InitParticles();
         }
+
         UpdateColors();
-        UpdateParticles();
 	}
 
+    private void FixedUpdate() {
+        UpdateParticles();
+    }
+
     private void UpdateParticles() {
-        for (int i = 0; i < maxParticles; i++) {
+        for (int i = 0; i < particleCount; i++) {
             //Get
             ParticleSystem.Particle particle = particles[i];
             ParticleData data = dataList[i];
 
-            //Change
-
-
+            #region Change
             //Gravity
             Vector3 direction = circleCenter - particle.position;
-            Vector3 gravityForce = direction.normalized * gravityPointMass * particleMass * forceRatio;
+            Vector3 gravityForce = direction.normalized * forceRatio * particleMass;
 
-            float gravityAngle = Vector3.Angle(gravityForce, data.prevGravityForce);
-
-            //inverse direction
-            data.acceleration += gravityForce;
-
-            if (gravityAngle > angle) {
-                data.acceleration = acceleration;
+            float deltaGravityAngle = Vector3.Angle(gravityForce, data.prevGravityForce);
+            
+            if (deltaGravityAngle > deltaGravityAngleForChange) {
+                data.acceleration = accelerateDirection;
+            } else {
+                data.acceleration += gravityForce;
             }
 
             data.prevGravityForce = gravityForce;
@@ -112,18 +115,16 @@ public class EQCircle : MonoBehaviour {
             Color color = Color.Lerp(downColor, upColor, Mathl.Map(particle.position.x, -20, 20, 0, 1f));
             particle.startColor = color;
 
-            //Size
-            //particle.startSize = direction.sqrMagnitude * 0.01f;
-
             //Acceleration
             particle.position += data.acceleration * Time.deltaTime;
+            #endregion
 
             //Apply
             particles[i] = particle;
             dataList[i] = data;
         }
 
-        particleSystem.SetParticles(particles, maxParticles);
+        particleSystem.SetParticles(particles, particleCount);
     }
 
 
@@ -152,7 +153,6 @@ public class EQCircle : MonoBehaviour {
     }
 
     public struct ParticleData {
-        public Vector3 gravitationPoint;
         public Vector3 startPosition;
         public Vector3 acceleration;
         public Vector3 prevGravityForce;
