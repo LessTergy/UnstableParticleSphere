@@ -244,7 +244,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1943442427
+  randomSeed: 1114009444
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3528,13 +3528,17 @@ MonoBehaviour:
   particleCount: 5000
   particleSize: 0.1
   sphereRadius: 5
+  changingColor:
+    value: {r: 1, g: 1, b: 1, a: 1}
+    colorA: {r: 1, g: 1, b: 1, a: 1}
+    colorB: {r: 1, g: 1, b: 1, a: 1}
+    timeRange:
+      min: 1
+      max: 2
   particleMass: 0.01
-  deltaGravityAngleForChange: 20
+  deltaGravityAngleForChange: 10
   accelerateDirection: {x: 0, y: 10, z: 0}
-  forceRatio: 40
-  upColor: {r: 1, g: 0.64137924, b: 0, a: 0}
-  downColor: {r: 0.3455882, g: 0.56673425, b: 1, a: 0}
-  timeColorDelay: 1
+  gravityForceRatio: 20
 --- !u!1 &2105902449
 GameObject:
   m_ObjectHideFlags: 0
