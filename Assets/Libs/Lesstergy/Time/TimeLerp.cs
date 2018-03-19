@@ -9,24 +9,23 @@ namespace Lesstergy.Time {
         public float finishValue;
         public float timeLength;
         
-        public float progress { get; private set; }
+        public float progress {
+            get {
+                return (UnityEngine.Time.timeSinceLevelLoad - lastTime) / timeLength;
+            }
+        }
 
-        public void SetValues(float startValue, float finishValue, float time) {
+        private float lastTime;
+
+        public void SetValues(float startValue, float finishValue, float timeLength) {
             this.startValue = startValue;
             this.finishValue = finishValue;
-            this.timeLength = time;
-            progress = 0f;
+            this.timeLength = timeLength;
+
+            lastTime = UnityEngine.Time.timeSinceLevelLoad;
         }
 
-        public void Update() {
-            progress += UnityEngine.Time.deltaTime / timeLength;
-        }
-
-        public float GetValueWithTime(float exactTime) {
-            return Mathf.Lerp(startValue, finishValue, exactTime / timeLength);
-        }
-
-        public float value {
+        public float currentValue {
             get {
                 return Mathf.Lerp(startValue, finishValue, progress);
             }
