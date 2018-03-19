@@ -57,7 +57,7 @@ public class UnstableSphere : MonoBehaviour {
             Vector3 startPosition = randomPoint * sphereRadius + transform.position;
             particle.position = startPosition;
 
-            particle.startColor = new Color(1, 1, 1);
+            particle.startColor = Color.white;
             particle.startSize = particleSize;
 
             //Apply
