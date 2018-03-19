@@ -15,17 +15,14 @@ namespace Lesstergy.Colors {
         [Space(10)]
         public RangeFloat timeRange;
 
-        private TimeLerp deltaTimeLerp = new TimeLerp();
+        private TimeLerp timeLerp = new TimeLerp();
 
         public void Update() {
-            if (deltaTimeLerp.progress == 0f) {
+            value = Color.Lerp(colorA, colorB, timeLerp.currentValue);
+            
+            if (timeLerp.progress >= 1f) {
                 SetNewColors();
-            }
-            value = Color.Lerp(colorA, colorB, deltaTimeLerp.value);
-
-            deltaTimeLerp.Update();
-            if (deltaTimeLerp.progress >= 1f) {
-                SetDelta();
+                SetLerpTransition();
             }
         }
 
@@ -34,8 +31,8 @@ namespace Lesstergy.Colors {
             colorB = ColorTool.GetRandom();
         }
 
-        public void SetDelta() {
-            deltaTimeLerp.SetValues(0f, 1f, timeRange.Random());
+        public void SetLerpTransition() {
+            timeLerp.SetValues(0f, 1f, timeRange.Random());
         }
     }
 

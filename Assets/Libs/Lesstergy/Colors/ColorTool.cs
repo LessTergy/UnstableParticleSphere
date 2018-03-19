@@ -10,4 +10,3 @@ namespace Lesstergy.Colors {
 
     }
 }
-
