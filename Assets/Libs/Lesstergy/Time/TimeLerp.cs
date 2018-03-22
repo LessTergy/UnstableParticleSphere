@@ -3,6 +3,8 @@ using System;
 
 namespace Lesstergy.Time {
 
+    //Lerp between two float values in a certain time
+
     [Serializable]
     public class TimeLerp {
         public float startValue;
@@ -12,6 +14,12 @@ namespace Lesstergy.Time {
         public float progress {
             get {
                 return (UnityEngine.Time.timeSinceLevelLoad - lastTime) / timeLength;
+            }
+        }
+
+        public bool isFinished {
+            get {
+                return progress >= 1f;
             }
         }
 

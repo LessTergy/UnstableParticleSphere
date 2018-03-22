@@ -20,7 +20,7 @@ namespace Lesstergy.Colors {
         public void Update() {
             value = Color.Lerp(colorA, colorB, timeLerp.currentValue);
             
-            if (timeLerp.progress >= 1f) {
+            if (timeLerp.isFinished) {
                 SetNewColors();
                 SetLerpTransition();
             }
