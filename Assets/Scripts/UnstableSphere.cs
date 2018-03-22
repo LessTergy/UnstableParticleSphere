@@ -92,7 +92,8 @@ public class UnstableSphere : MonoBehaviour {
 
             float deltaGravityAngle = Vector3.Angle(gravityForce, data.prevGravityForce);
             
-            if (deltaGravityAngle > gravityAngle) {
+            bool isExceedAngle = deltaGravityAngle > gravityAngle;
+            if (isExceedAngle) {
                 data.acceleration = accelerateDirection;
             } else {
                 data.acceleration += gravityForce;
